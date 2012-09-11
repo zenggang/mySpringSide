@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="demo"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/classes12.jar"/>
@@ -20,5 +22,6 @@
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-jdbc.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-test.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-tx.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/mysql-connector-java-5.1.18-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
