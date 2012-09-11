@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/classes12.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/commons-pool-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/h2-1.1.110.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/junit-4.4.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/oracle_jdbc.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/OracleDatabase11gRelease111.1.0.6.0JDBCDrivers.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/persistence-api-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-aop.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-beans.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-context.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-core.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-jdbc.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-test.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/spring-tx.jar"/>
+	<classpathentry kind="output" path="src"/>
+</classpath>
