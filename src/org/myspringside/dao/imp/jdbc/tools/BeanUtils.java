@@ -63,7 +63,7 @@ public class BeanUtils {
 		try {
 			result = field.get(object);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 			// logger.info("error wont' happen");
 		}
 		field.setAccessible(accessible);
@@ -84,7 +84,7 @@ public class BeanUtils {
 		try {
 			field.set(object, newValue);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 			// logger.info("Error won't happen");
 		}
 		field.setAccessible(accessible);

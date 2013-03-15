@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.myspringside.dao.imp.jdbc.support.processor.StatementProcessor;
 import org.myspringside.dao.imp.jdbc.tools.DBUtils;
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
 
 public class CommonQueryUtils<T> {
 	StatementProcessor<T> sp;
@@ -15,8 +16,8 @@ public class CommonQueryUtils<T> {
 		this.sp = sp;
 	}
 
-	public int getRecordCountBySQL(StatementProcessor<T> sp, String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection();
+	public int getRecordCountBySQL(String dataSourceKey,StatementProcessor<T> sp, String sql, Object... params) {
+		Connection conn = DataSourceFactory.getConnection(dataSourceKey);
 		// 查询表记录数
 		String countSQL = "select count(*) from (" + sql + ") aa";
 
@@ -39,8 +40,8 @@ public class CommonQueryUtils<T> {
 		return count;
 	}
 
-	public int SQLQueryForInt(String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection();
+	public int SQLQueryForInt(String dataSourceKey,String sql, Object... params) {
+		Connection conn = DataSourceFactory.getConnection(dataSourceKey);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -54,7 +55,7 @@ public class CommonQueryUtils<T> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps, rs);
 		}

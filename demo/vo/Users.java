@@ -6,8 +6,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.myspringside.dao.imp.jdbc.tools.DataSource;
+
 @Entity
 @Table(name="users")
+@DataSource(name="test2Db")
 public class Users {
 	
 	@Id

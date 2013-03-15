@@ -14,6 +14,7 @@ import oracle.jdbc.driver.OracleTypes;
 import org.myspringside.dao.imp.jdbc.support.DataSourceFactory;
 import org.myspringside.dao.imp.jdbc.support.config.DataBaseConfig;
 import org.myspringside.dao.imp.jdbc.support.config.EntityInfo;
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
 import org.myspringside.dao.imp.jdbc.tools.QueryConditions;
 
 public class StatementProcessor<T> {
@@ -33,7 +34,7 @@ public class StatementProcessor<T> {
 			ps.setNull(i + 1, OracleTypes.VARCHAR);
 		} catch (SQLException e) {
 			ps.setNull(i + 1, OracleTypes.CHAR);
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 	}
 
@@ -137,13 +138,13 @@ public class StatementProcessor<T> {
 				try {
 					throw new Exception("the attribute of this Entity hasn't been assigned!!");
 				} catch (Exception e) {
-					e.printStackTrace();
+					e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 				}
 			valueStr = valueStr.substring(0, valueStr.length() - 1) + ")";
 			attrStr = attrStr.substring(0, attrStr.length() - 1) + ")";
 			sql = attrStr + " values " + valueStr;
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 		return sql;
 	}
@@ -239,7 +240,7 @@ public class StatementProcessor<T> {
 			setStatementParamsValue(ps, colValue.toArray());
 			return ps;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		}
 	}
@@ -303,7 +304,7 @@ public class StatementProcessor<T> {
 
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 
 	}

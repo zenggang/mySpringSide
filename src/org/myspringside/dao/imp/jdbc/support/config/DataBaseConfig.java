@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
+
 /**
  * @author Alex
  */
@@ -19,8 +21,10 @@ public class DataBaseConfig {
 	private String dialect;
 	private String dataSourceType;
 	private String readOnlySource;
+	private String otherSource;
 	private Boolean readOnlyEnable=false;
 	private Map<String, DataBaseConfig> readOnlyDataSourceMap;
+	private Map<String, DataBaseConfig> otherDataSourceMap;
 
 	public static String DBCP = "dbcp";
 	public static String C3P0 = "c3p0";
@@ -93,6 +97,7 @@ public class DataBaseConfig {
 				dialect = p.getProperty("dialect");
 				dataSourceType = p.getProperty("datasourceType");
 				readOnlySource=p.getProperty("readOnlySource");
+				otherSource=p.getProperty("otherSource");
 				String debug = p.getProperty("debug");
 				readOnlyEnable = "true".equals(p.getProperty("readOnlyEnable"));
 				if(p.getProperty("maxPoolSize")!=null)
@@ -119,13 +124,24 @@ public class DataBaseConfig {
 						readOnlyDataSourceMap.put(key, dbConfig);
 					}
 				}
+				if(otherSource!=null){
+					String[] sources = otherSource.split(",");
+					otherDataSourceMap = new HashMap<String, DataBaseConfig>();
+					for(String source:sources){
+						String key = source;
+						String path = fn.replace("dbConfig", key);
+						DataBaseConfig dbConfig = new DataBaseConfig(path);
+						dbConfig.dataSourceName=key;
+						otherDataSourceMap.put(key, dbConfig);
+					}
+				}
 				checkDialect(dialect);
 				fi = null;
 				p = null;
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			}
 		}
 	}
@@ -195,6 +211,10 @@ public class DataBaseConfig {
 
 	public void setMinPoolSize(int minPoolSize) {
 		this.minPoolSize = minPoolSize;
+	}
+
+	public Map<String, DataBaseConfig> getOtherDataSourceMap() {
+		return otherDataSourceMap;
 	}
 	
 	

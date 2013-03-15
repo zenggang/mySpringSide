@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.myspringside.dao.imp.jdbc.exception.ArgumentTypeIllegalException;
+import org.myspringside.dao.imp.jdbc.tools.DataSource;
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
 import org.myspringside.dao.imp.jdbc.tools.MultipleTable;
 import org.myspringside.dao.imp.jdbc.tools.BeanUtils;
 import org.myspringside.dao.imp.jdbc.tools.GenericsUtils;
@@ -42,7 +44,19 @@ public class EntityInfo<T> {
 	public Boolean isMultiPleEntity=false;
 	int multiplePageSize=0;
 	String multipleField="";
+	String dataSource;
+	
 	public final static String CLOB = "clob";
+	
+	
+	
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
+	}
 
 	public Map<String, String> getAttr_col() {
 		return attr_col;
@@ -104,7 +118,7 @@ public class EntityInfo<T> {
 				identities.add(BeanUtils.forceGetProperty(vo, idAttr));
 			}
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 		return identities;
 	}
@@ -207,10 +221,11 @@ public class EntityInfo<T> {
 					@SuppressWarnings("unused")
 					Field idf = c.getField("id");
 				} catch (NoSuchFieldException e) {
-					e.printStackTrace();
+					e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 				}
 				idAttrs.add("id");
 			}
+
 			if (c.isAnnotationPresent(Table.class)) {
 				Table tc = (Table) c.getAnnotation(Table.class);
 				table = tc.name();
@@ -222,12 +237,16 @@ public class EntityInfo<T> {
 			} else {
 				throw new Exception("@Table annotaion is not present!");
 			}
+			if (c.isAnnotationPresent(DataSource.class)) {
+				DataSource tc = (DataSource) c.getAnnotation(DataSource.class);
+				dataSource=tc.name();
+			}
 			//如果主键超过一个则不能使用自动增长，否则抛出异常
 			if (getIdAttrs().size() > 1 && getIdentityColumn() != null) {
 				throw new Exception("mutiple id column can not use identity column");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 	}
 

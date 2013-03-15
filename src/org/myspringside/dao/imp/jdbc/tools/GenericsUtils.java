@@ -71,10 +71,10 @@ public class GenericsUtils {
 			return gc;
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		}
 		return null;
 	}

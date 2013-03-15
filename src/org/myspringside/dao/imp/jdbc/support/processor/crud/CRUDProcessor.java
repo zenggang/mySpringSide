@@ -19,6 +19,8 @@ import org.myspringside.dao.imp.jdbc.support.processor.ResultSetProcessor;
 import org.myspringside.dao.imp.jdbc.support.processor.StatementProcessor;
 import org.myspringside.dao.imp.jdbc.tools.BeanUtils;
 import org.myspringside.dao.imp.jdbc.tools.DBUtils;
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
+import org.myspringside.dao.imp.jdbc.tools.MyStringTool;
 import org.myspringside.dao.imp.jdbc.tools.Page;
 
 @SuppressWarnings( { "unchecked" })
@@ -73,17 +75,22 @@ public class CRUDProcessor<T> {
 	}
 
 	public List<T> findBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection(isFromReadOnlySource);
+		Connection conn = getConnection(isFromReadOnlySource);
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
 			sp.setStatementParamsValue(ps, params);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(params));
+			}
 			rs = ps.executeQuery();
 			List<T> vol = rp.resultSetTovoList(rs, ei);
+			
 			return vol;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -91,12 +98,16 @@ public class CRUDProcessor<T> {
 	}
 	
 	public String findStringValueBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection(isFromReadOnlySource);
+		Connection conn = getConnection(isFromReadOnlySource);
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
 			sp.setStatementParamsValue(ps, params);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(params));
+			}
 			rs = ps.executeQuery();
 			String value ="";
 			while (rs.next()) {
@@ -104,19 +115,23 @@ public class CRUDProcessor<T> {
 			}
 			return value;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return "";
 		} finally {
 			DBUtils.close(conn, ps, rs);
 		}
 	}
 	public List<String> findStringValueListBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection(isFromReadOnlySource);
+		Connection conn = getConnection(isFromReadOnlySource);
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
 			sp.setStatementParamsValue(ps, params);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(params));
+			}
 			rs = ps.executeQuery();
 			List<String> valueList =new ArrayList<String>();
 			while (rs.next()) {
@@ -125,7 +140,7 @@ public class CRUDProcessor<T> {
 			}
 			return valueList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -140,12 +155,16 @@ public class CRUDProcessor<T> {
 	}
 	
 	public List<Integer> findIntValueListBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection(isFromReadOnlySource);
+		Connection conn = getConnection(isFromReadOnlySource);
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
 			sp.setStatementParamsValue(ps, params);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(params));
+			}
 			rs = ps.executeQuery();
 			List<Integer> valueList =new ArrayList<Integer>();
 			while (rs.next()) {
@@ -154,7 +173,7 @@ public class CRUDProcessor<T> {
 			}
 			return valueList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -193,7 +212,7 @@ public class CRUDProcessor<T> {
 //			Page<T> page = new Page<T>(start_count, record_count, pageSize, vol);
 //			return page;
 //		} catch (SQLException e) {
-//			e.printStackTrace();
+//			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 //			return null;
 //		} finally {
 //			DBUtils.close(conn, ps, rs);
@@ -216,14 +235,14 @@ public class CRUDProcessor<T> {
 	//该分页查询可加临时列映射，可传入sql语句
 	@SuppressWarnings("unchecked")
 	private Page<T> oraclePageQuery(String sql_params, int pageNo, int pageSize) {
-		int record_count = cqu.getRecordCountBySQL(sp, sql_params);
+		int record_count = cqu.getRecordCountBySQL(ei.getDataSource(),sp, sql_params);
 		if (record_count == 0)
 			return null;
 		int start_count = (pageNo - 1) * pageSize + 1;
 		int end_count = start_count + pageSize - 1;
 		String sql = "select * FROM (SELECT T.*, ROWNUM RN FROM (" + sql_params
 				+ ") T WHERE ROWNUM <= ?) WHERE RN >= ?";
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn = getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -237,7 +256,7 @@ public class CRUDProcessor<T> {
 			Page<T> page = new Page<T>(start_count, record_count, pageSize, vol);
 			return page;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -247,7 +266,7 @@ public class CRUDProcessor<T> {
 	@SuppressWarnings("unchecked")
 	private Page<T> oraclePageQuery(int pageNo, int pageSize, String... params) {
 
-		int record_count = cqu.getRecordCountBySQL(sp, ei.getTable());
+		int record_count = cqu.getRecordCountBySQL(ei.getDataSource(),sp, ei.getTable());
 		if (record_count == 0)
 			return null;
 		// 构造查询语句
@@ -255,7 +274,7 @@ public class CRUDProcessor<T> {
 		int start_count = (pageNo - 1) * pageSize + 1;
 		int end_count = start_count + pageSize - 1;
 		String sql = sp.getOraclePageQueryStatementByParams(colValue, params);
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn = getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -270,7 +289,7 @@ public class CRUDProcessor<T> {
 			Page<T> page = new Page<T>(start_count, record_count, pageSize, vol);
 			return page;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -278,12 +297,12 @@ public class CRUDProcessor<T> {
 	}
 
 	private Page<T> mysqlPageQuery(int pageNo, int pageSize, String sql,String... params) {
-		int count = cqu.getRecordCountBySQL(sp, sql,params);
+		int count = cqu.getRecordCountBySQL(ei.getDataSource(),sp, sql,params);
 		if (count == 0)
 			return null;
 		int start = (pageNo - 1) * pageSize;
 		sql += " limit " + start + "," + pageSize;
-		Connection conn = DataSourceFactory.getConnection(true);
+		Connection conn = getConnection(true);
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
@@ -296,7 +315,7 @@ public class CRUDProcessor<T> {
 				return p;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -307,7 +326,7 @@ public class CRUDProcessor<T> {
 	public List<T> findByMutiAttr(String... params) {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection conn = DataSourceFactory.getConnection(true);
+		Connection conn = getConnection(true);
 		try {
 			ps = sp.getQueryStatementFromParams(conn, params);
 			rs = ps.executeQuery();
@@ -316,7 +335,7 @@ public class CRUDProcessor<T> {
 				return vl;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps, rs);
 		}
@@ -329,7 +348,7 @@ public class CRUDProcessor<T> {
 	public T get(Boolean isReadOnly,Object... id) {
 
 		String sql = sp.createGetStatement();
-		Connection conn = DataSourceFactory.getConnection(isReadOnly);
+		Connection conn = getConnection(isReadOnly);;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -346,7 +365,7 @@ public class CRUDProcessor<T> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -358,7 +377,7 @@ public class CRUDProcessor<T> {
 		String sql = sp.createGetAllStatement();
 		ResultSet rs = null;
 		List<T> voList = null;
-		Connection conn = DataSourceFactory.getConnection(isReadOnly);
+		Connection conn = getConnection(isReadOnly);
 		Statement ps = null;
 		try {
 			ps = conn.createStatement();
@@ -366,7 +385,7 @@ public class CRUDProcessor<T> {
 			voList = rp.resultSetTovoList(rs, ei);
 			return voList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return null;
 		} finally {
 			DBUtils.close(conn, ps, rs);
@@ -376,17 +395,21 @@ public class CRUDProcessor<T> {
 	public void remove(Object... id) {
 		if (id.length < ei.getIdAttrs().size())
 			throw new IllegalArgumentException("the count of id is not enough.");
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn =getConnection();
 		PreparedStatement ps = null;
 		try {
 			String sql = sp.getDeleteStatement();
 			ps = conn.prepareStatement(sql);
 			sp.setStatementParamsValue(ps, id);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(id));
+			}
 			ps.execute();
 		} catch (SecurityException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps);
 		}
@@ -401,7 +424,7 @@ public class CRUDProcessor<T> {
 			}
 		} catch (NoSuchFieldException e) {
 			
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 		remove(identities.toArray());
 	}
@@ -411,7 +434,7 @@ public class CRUDProcessor<T> {
 	public void save(T vo) throws SQLException{
 		String is_exist_sql = sp.getCountStatementWithIDcondition();
 		List id_values = ei.getIDAttrValues(vo);
-		int res = cqu.SQLQueryForInt(is_exist_sql, id_values.toArray());
+		int res = cqu.SQLQueryForInt(ei.getDataSource(),is_exist_sql, id_values.toArray());
 		if (res == 0) {
 			insert(vo);
 		} else {
@@ -431,7 +454,7 @@ public class CRUDProcessor<T> {
 			try {
 				multipleFieldValue = (Integer) BeanUtils.forceGetProperty(vo, ei.getMultipleField());
 			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
+				e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			}
 			if(isInsert)
 				sql=sp.getMultipleEntityInsertStatement(cols, multipleFieldValue);
@@ -444,7 +467,7 @@ public class CRUDProcessor<T> {
 	public T insert(T vo) throws SQLException{
 		ArrayList<String> cols = new ArrayList<String>(ei.getCol_attr().keySet());
 		String sql = getMultiPleEntitySql(vo, cols,true);
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn = getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -458,6 +481,10 @@ public class CRUDProcessor<T> {
 
 			}			
 			sp.setStatementParamsValue(ps, attrValues.toArray());
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromList(attrValues));
+			}
 			ps.execute();
 
 			if (ei.getIdentityColumn() != null) {
@@ -471,7 +498,7 @@ public class CRUDProcessor<T> {
 			}
 			return vo;
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps, rs);
 		}
@@ -480,7 +507,7 @@ public class CRUDProcessor<T> {
 	
 	public List<T> insertListVo(List<T> listVo) throws SQLException{
 		ArrayList<String> cols = new ArrayList<String>(ei.getCol_attr().keySet());
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn = getConnection();
 		String sql =sp.getInsertStatement(cols);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -496,6 +523,10 @@ public class CRUDProcessor<T> {
 					Type ft = ei.getAll_attr_types().get(attr);				
 				}			
 				sp.setStatementParamsValue(ps, attrValues.toArray());
+				if(DataBaseConfig.IsDebug){
+					System.out.println(sql);
+					System.out.println(MyStringTool.stringFromList(attrValues));
+				}
 				ps.execute();
 				if (ei.getIdentityColumn() != null) {
 					int id = -1;
@@ -510,7 +541,7 @@ public class CRUDProcessor<T> {
 			conn.commit(); //事务提交
 			
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps, rs);
 		}
@@ -522,7 +553,7 @@ public class CRUDProcessor<T> {
 		String sql="";
 		if(isSingleTable && listVo.size()>0)
 			sql = getMultiPleEntitySql(listVo.get(0), cols,true);
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn =getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -539,6 +570,10 @@ public class CRUDProcessor<T> {
 					Type ft = ei.getAll_attr_types().get(attr);				
 				}			
 				sp.setStatementParamsValue(ps, attrValues.toArray());
+				if(DataBaseConfig.IsDebug){
+					System.out.println(sql);
+					System.out.println(MyStringTool.stringFromList(attrValues));
+				}
 				ps.execute();
 				if (ei.getIdentityColumn() != null) {
 					int id = -1;
@@ -553,7 +588,7 @@ public class CRUDProcessor<T> {
 			conn.commit(); //事务提交
 			
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps, rs);
 		}
@@ -561,7 +596,7 @@ public class CRUDProcessor<T> {
 	}
 
 	public int executeSQLUpdate(String sql, Object... params) {
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn =getConnection();
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
@@ -569,7 +604,7 @@ public class CRUDProcessor<T> {
 			int res = ps.executeUpdate();
 			return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return -1;
 		} finally {
 			DBUtils.close(conn, ps);
@@ -577,7 +612,7 @@ public class CRUDProcessor<T> {
 	}
 	
 	public int executeMuttSQLUpdate(Map<String, Object[]> sqls){
-		Connection conn = DataSourceFactory.getConnection();
+		Connection conn = getConnection();
 		PreparedStatement ps = null;
 		try {	
 			conn.setAutoCommit(false);//禁止自动提交，设置回滚点
@@ -589,7 +624,7 @@ public class CRUDProcessor<T> {
 	        conn.commit(); //事务提交
 	        return 1;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			return -1;
 		} finally {
 			DBUtils.close(conn, ps);
@@ -599,7 +634,7 @@ public class CRUDProcessor<T> {
 	public void update(T vo) {
 		ArrayList<String> col_list = new ArrayList<String>(ei.getCol_attr().keySet());
 		String sql = getMultiPleEntitySql(vo, col_list, false);
-		Connection conn =  DataSourceFactory.getConnection();
+		Connection conn =  getConnection();
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
@@ -618,15 +653,22 @@ public class CRUDProcessor<T> {
 			sp.setStatementParamsValue(ps, attrValues.toArray());
 			if(DataBaseConfig.IsDebug){
 				System.out.println(sql);
-				System.out.println(attrValues.toArray());
+				System.out.println(MyStringTool.stringFromList(attrValues));
 			}
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {
 			DBUtils.close(conn, ps);
 		}
+	}
+	
+	public  Connection getConnection(Boolean isReadOnly){
+		return DataSourceFactory.getConnection(isReadOnly,ei.getDataSource());
+	}
+	public  Connection getConnection(){
+		return DataSourceFactory.getConnection(ei.getDataSource());
 	}
 }

@@ -78,7 +78,7 @@ public class JdbcEntityDao<T> implements IjdbcEntityDao<T> {
 	}
 
 	public Connection getConnection() {
-		return DataSourceFactory.getConnection();
+		return DataSourceFactory.getConnection(ei.getDataSource());
 	}
 
 	public List<T> findBySQLQuery(String sql, Object... params) {
@@ -169,11 +169,11 @@ public class JdbcEntityDao<T> implements IjdbcEntityDao<T> {
 	}
 
 	public int SQLQueryForInt(String sql, Object... params) {
-		return queryUtils.SQLQueryForInt(sql, params);
+		return queryUtils.SQLQueryForInt(ei.getDataSource(),sql, params);
 	}
 
 	public DataSource getDatasource() {
-		return DataSourceFactory.getDataSource();
+		return DataSourceFactory.getDataSource(ei.getDataSource());
 	}
 
 	public void setDatasource(DataSource datasource) {
@@ -181,7 +181,7 @@ public class JdbcEntityDao<T> implements IjdbcEntityDao<T> {
 	}
 
 	public int getTableRecordCount() {
-		return queryUtils.getRecordCountBySQL(sp, ei.getTable());
+		return queryUtils.getRecordCountBySQL(ei.getDataSource(),sp, ei.getTable());
 	}
 
 	public List<T> resultSetTovoList(ResultSet rs) {

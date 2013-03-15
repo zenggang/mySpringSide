@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -15,6 +13,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.myspringside.dao.imp.jdbc.support.config.DataBaseConfig;
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -25,6 +24,7 @@ public class DataSourceFactory {
 	public static String READ_ONLY_DATASOURCE_KEY = "read_only_default_datasource_key";
 	private static Random ran = new Random();
 	private static String[] readOnlyKeys=new String[]{};
+	private static String[] otherKeys=new String[]{};
 	public static DataBaseConfig getDbConfig() {
 		return dbConfig;
 	}
@@ -46,6 +46,12 @@ public class DataSourceFactory {
 				readOnlyKeys =dbConfig.getReadOnlyDataSourceMap().keySet().toArray(readOnlyKeys);
 				for(String key:readOnlyKeys){
 					setDataSouce(dbConfig.getReadOnlyDataSourceMap().get(key), key);
+				}
+			}
+			if(dbConfig.getOtherDataSourceMap()!=null){
+				otherKeys=dbConfig.getOtherDataSourceMap().keySet().toArray(otherKeys);
+				for(String key:otherKeys){
+					setDataSouce(dbConfig.getOtherDataSourceMap().get(key), key);
 				}
 			}
 		}
@@ -76,19 +82,18 @@ public class DataSourceFactory {
 			else
 				dataSources_map.put(key, ds);
 		} catch (NamingException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private static void initC3P0(DataBaseConfig config, String key) {
 		ComboPooledDataSource cpds = new ComboPooledDataSource();
 		try {
 			cpds.setDriverClass(config.getDriver());
 		} catch (PropertyVetoException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(e);
 		}
 		System.out.println("数据源"+config.dataSourceName+"开始C3P0初始化。。。");
 		cpds.setUser(config.getUserName());
@@ -117,7 +122,6 @@ public class DataSourceFactory {
 		dataSources_map.put(key, cpds);
 	}
 
-	@SuppressWarnings("unused")
 	private static void initDBCP(DataBaseConfig config, String key) {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName(config.getDriver());
@@ -132,16 +136,22 @@ public class DataSourceFactory {
 		dataSources_map.put(key, ds);
 	}
 
-	public static DataSource getDataSource() {
-		if (dataSources_map.isEmpty()) {
-			setDataSouce(dbConfig, DEFAULT_DATASOURCE_KEY);
-			if(dbConfig.getReadOnlyDataSourceMap()!=null  ){
-				readOnlyKeys =(String[]) dbConfig.getReadOnlyDataSourceMap().keySet().toArray();
-				for(String key:readOnlyKeys){
-					setDataSouce(dbConfig.getReadOnlyDataSourceMap().get(key), key);
-				}
-			}
-		}
+	public static DataSource getMainDataSource() {
+//		if (dataSources_map.isEmpty()) {
+//			setDataSouce(dbConfig, DEFAULT_DATASOURCE_KEY);
+//			if(dbConfig.getReadOnlyDataSourceMap()!=null  ){
+//				readOnlyKeys =(String[]) dbConfig.getReadOnlyDataSourceMap().keySet().toArray();
+//				for(String key:readOnlyKeys){
+//					setDataSouce(dbConfig.getReadOnlyDataSourceMap().get(key), key);
+//				}
+//			}
+//			if(dbConfig.getOtherDataSourceMap()!=null){
+//				otherKeys=dbConfig.getOtherDataSourceMap().keySet().toArray(otherKeys);
+//				for(String key:otherKeys){
+//					setDataSouce(dbConfig.getOtherDataSourceMap().get(key), key);
+//				}
+//			}
+//		}
 		return dataSources_map.get(DEFAULT_DATASOURCE_KEY);
 	}
 
@@ -153,36 +163,39 @@ public class DataSourceFactory {
 		dataSources_map.put(DEFAULT_DATASOURCE_KEY, dataSource);
 	}
 
-	static public Connection getConnection() {
+	static public Connection getMainConnection() {
 		try {
-			return DataSourceFactory.getDataSource().getConnection();
+			return DataSourceFactory.getMainDataSource().getConnection();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		}
 		return null;
 	}
 
-	static public Connection getConnection(Boolean isReadOnly) {
+	static public Connection getConnection(Boolean isReadOnly,String key) {
 		try {
-			if(isReadOnly && dbConfig.getReadOnlyEnable()){
-				
-				int i=readOnlyKeys.length;
-				if(i>0){
-					if(i==1){
-						
-						return DataSourceFactory.getDataSource(readOnlyKeys[0]).getConnection();
-					}else{
-						int j =ran.nextInt(i);
-						return DataSourceFactory.getDataSource(readOnlyKeys[j]).getConnection();
-					}
-				}else
-					throw new RuntimeException("no readOnly dataSource was setting!");
-			}else{
-				
-				return DataSourceFactory.getDataSource().getConnection();
-			}
+			if(key==null){
+				if(isReadOnly && dbConfig.getReadOnlyEnable()){
+					
+					int i=readOnlyKeys.length;
+					if(i>0){
+						if(i==1){
+							
+							return DataSourceFactory.getDataSource(readOnlyKeys[0]).getConnection();
+						}else{
+							int j =ran.nextInt(i);
+							return DataSourceFactory.getDataSource(readOnlyKeys[j]).getConnection();
+						}
+					}else
+						throw new RuntimeException("no readOnly dataSource was setting!");
+				}else{
+						return DataSourceFactory.getMainDataSource().getConnection();
+				}
+			}else
+				return DataSourceFactory.getDataSource(key).getConnection();
+			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		}
 		return null;
 	}
@@ -190,9 +203,12 @@ public class DataSourceFactory {
 	
 	static public Connection getConnection(String datasourceKey) {
 		try {
-			return DataSourceFactory.getDataSource(datasourceKey).getConnection();
+			if(datasourceKey==null)
+				return DataSourceFactory.getMainDataSource().getConnection();
+			else
+				return DataSourceFactory.getDataSource(datasourceKey).getConnection();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(e);
 		}
 		return null;
 	}

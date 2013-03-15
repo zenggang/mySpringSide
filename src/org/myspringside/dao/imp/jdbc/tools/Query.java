@@ -112,7 +112,7 @@ public class Query<T> {
 			}
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 		return true;
 	}

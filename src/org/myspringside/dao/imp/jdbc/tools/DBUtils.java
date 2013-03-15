@@ -16,7 +16,7 @@ public class DBUtils {
 				rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		}
 	}
 
@@ -28,7 +28,7 @@ public class DBUtils {
 				ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error( e);
 		}
 	}
 }

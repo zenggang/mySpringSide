@@ -11,6 +11,7 @@ import org.myspringside.dao.imp.jdbc.support.DataSourceFactory;
 import org.myspringside.dao.imp.jdbc.support.config.DataBaseConfig;
 import org.myspringside.dao.imp.jdbc.support.config.EntityInfo;
 import org.myspringside.dao.imp.jdbc.tools.BeanUtils;
+import org.myspringside.dao.imp.jdbc.tools.LoggerTool;
 
 
 public class ResultSetProcessor {
@@ -19,7 +20,9 @@ public class ResultSetProcessor {
 		return DataSourceFactory.getDbConfig().getDialect();
 	}
  
+	
 
+	
 	@SuppressWarnings("unchecked")
 	public <GT> List<GT> resultSetTovoList(ResultSet rs, EntityInfo<GT> ei) {
 		try {
@@ -88,15 +91,15 @@ public class ResultSetProcessor {
 
 			return voList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (SecurityException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 		return null;
 	}
@@ -112,7 +115,7 @@ public class ResultSetProcessor {
 						return true;
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 			}
 			return false;
 		}
@@ -135,7 +138,7 @@ public class ResultSetProcessor {
 								BeanUtils.forceSetProperty(vo, attr, attrValue);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
+								e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 							}
 						}
 							@SuppressWarnings("unchecked")
@@ -204,15 +207,15 @@ public class ResultSetProcessor {
 			System.out.println("旧方法耗时:"+(time2-time1));
 			return voList; 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (SecurityException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		}
 		return null;
 	}
