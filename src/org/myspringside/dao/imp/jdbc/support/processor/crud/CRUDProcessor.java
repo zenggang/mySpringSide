@@ -356,6 +356,10 @@ public class CRUDProcessor<T> {
 			sp.setStatementParamsValue(ps, id);
 			rs = ps.executeQuery();
 			List<T> vl = rp.resultSetTovoList(rs, ei);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(id));
+			}
 			if (vl.size() == 0) {
 				return null;
 			} else if (vl.size() != 1) {
@@ -382,6 +386,9 @@ public class CRUDProcessor<T> {
 		try {
 			ps = conn.createStatement();
 			rs = ps.executeQuery(sql);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+			}
 			voList = rp.resultSetTovoList(rs, ei);
 			return voList;
 		} catch (SQLException e) {
@@ -600,6 +607,10 @@ public class CRUDProcessor<T> {
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
+			if(DataBaseConfig.IsDebug){
+				System.out.println(sql);
+				System.out.println(MyStringTool.stringFromObjects(params));
+			}
 			sp.setStatementParamsValue(ps, params);
 			int res = ps.executeUpdate();
 			return res;
