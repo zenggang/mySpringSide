@@ -31,7 +31,7 @@ public class CommonQueryUtils<T> {
 			//System.out.println(countSQL);
 			while (rs_count.next()) {
 				count = rs_count.getInt(1);
-			}
+			} 
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		} finally {
