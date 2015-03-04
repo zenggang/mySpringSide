@@ -148,11 +148,12 @@ public class CRUDProcessor<T> {
 	}
 	public int findIntValueBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
 		String result = findStringValueBySQLQuery(isFromReadOnlySource,sql, params);
-		if(!"".equals(result)){
+		if(!"".equals(result) || result!=null){
 			return Integer.valueOf(result);
-		}else
+		}else  
 			return 0;
 	}
+
 	
 	public List<Integer> findIntValueListBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
 		Connection conn = getConnection(isFromReadOnlySource);
