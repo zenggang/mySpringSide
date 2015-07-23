@@ -21,7 +21,7 @@ public interface IjdbcEntityDao<T> {
 	public List<T> getAll();
 	public List<T> getAllFromMainSource();
 
-	public void update(T vo);
+	public void update(T vo) throws SQLException;
 
 	public T insert(T vo) throws SQLException;
 	public List<T> insertListVo(List<T> listVo) throws SQLException;

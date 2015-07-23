@@ -152,7 +152,7 @@ public class JdbcEntityDao<T> implements IjdbcEntityDao<T> {
 		curdProcessor.save(vo);
 	}
 
-	public void update(T vo) {
+	public void update(T vo) throws SQLException {
 		curdProcessor.update(vo);
 	}
 

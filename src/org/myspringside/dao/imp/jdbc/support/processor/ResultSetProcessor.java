@@ -100,6 +100,8 @@ public class ResultSetProcessor {
 			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
+		}catch (Exception e) {
+			 LoggerTool.error(this.getClass(), e);
 		}
 		return null;
 	}
@@ -121,103 +123,4 @@ public class ResultSetProcessor {
 		}
 		return false;
 	}
-	/**
-	 *  			else if (ei.getColumn_types().get(colName).equals(EntityInfo.CLOB)) {
-							try {
-								Clob clob = rs.getClob(colName);
-								if (clob == null)
-									continue;
-								Reader reader = clob.getCharacterStream();
-								BufferedReader br = new BufferedReader(reader);
-								String attrValue = "";
-								String line = "";
-								while ((line = br.readLine()) != null) {
-									attrValue += line;
-								}
-								attrValue=attrValue.replaceAll("\\s*$","");
-								BeanUtils.forceSetProperty(vo, attr, attrValue);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace(); LoggerTool.error(this.getClass(), e);
-							}
-						}
-							@SuppressWarnings("unchecked")
-	public <GT> List<GT> resultSetTovoList2(ResultSet rs, EntityInfo<GT> ei) {
-		long time1 =new Date().getTime();
-
-		try {
-			List<GT> voList = new ArrayList<GT>();
-			GT vo = null;
-			Object[] gtSet =ei.getAttr_col().keySet().toArray();
-			int length = gtSet.length;
-			while (rs.next()) {
-				vo = (GT) ei.getEntityClass().newInstance();				
-				for (int i=0;i<length;i++) {
-					String attr = gtSet[i].toString();
-					String colName = ei.getAttr_col().get(attr);
-					if (!hasColumn(rs, colName))
-						continue;
-					Type ft = ei.getAll_attr_types().get(attr);
-					if (ft.equals(String.class)) {
-						if (ei.getColumn_types().get(colName) == null) {
-							String attrValue = rs.getString(colName);
-							BeanUtils.forceSetProperty(vo, attr, attrValue);
-						}
-					} else if (ft.equals(Date.class)) {
-						if (getDialect().equals(DataBaseConfig.ORACLE) || getDialect().equals(DataBaseConfig.MYSQL) ) {
-							Timestamp ts = rs.getTimestamp(colName);
-							if (ts != null) {
-								Date attrValue = new Date(ts.getTime());
-								BeanUtils.forceSetProperty(vo, attr, attrValue);
-							}
-						} else { 
-							Date attrValue = rs.getDate(colName);
-							if (attrValue != null) {
-								attrValue = new Date(attrValue.getTime());
-								BeanUtils.forceSetProperty(vo, attr, attrValue);
-							} else
-								BeanUtils.forceSetProperty(vo, attr, attrValue);
-						}
-					} else if (ft.equals(Integer.TYPE)) {
-						int attrValue = rs.getInt(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					} else if (ft.equals(Double.TYPE)) {
-						double attrValue = rs.getDouble(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					} else if (ft.equals(Long.TYPE)) {
-						long attrValue = rs.getLong(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					} else if (ft.equals(Boolean.TYPE)) {
-						boolean attrValue = rs.getBoolean(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					} else if (ft.equals(Float.TYPE)) {
-						float attrValue = rs.getFloat(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					} else if (ft.equals(Short.TYPE)) {
-						short attrValue = rs.getShort(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					} else if (ft.equals(Byte.TYPE)) {
-						byte attrValue = rs.getByte(colName);
-						BeanUtils.forceSetProperty(vo, attr, attrValue);
-					}
-				}
-				voList.add(vo);
-			}
-			long time2 =new Date().getTime();
-			System.out.println("旧方法耗时:"+(time2-time1));
-			return voList; 
-		} catch (SQLException e) {
-			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
-		} catch (InstantiationException e) {
-			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
-		} catch (SecurityException e) {
-			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
-		}
-		return null;
-	}
-	 */
 }

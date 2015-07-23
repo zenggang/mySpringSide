@@ -642,7 +642,7 @@ public class CRUDProcessor<T> {
 	}
 	}
 
-	public void update(T vo) {
+	public void update(T vo) throws SQLException {
 		ArrayList<String> col_list = new ArrayList<String>(ei.getCol_attr().keySet());
 		String sql = getMultiPleEntitySql(vo, col_list, false);
 		Connection conn =  getConnection();
@@ -667,8 +667,6 @@ public class CRUDProcessor<T> {
 				System.out.println(MyStringTool.stringFromList(attrValues));
 			}
 			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace(); LoggerTool.error(this.getClass(), e);
 		} finally {

@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/aopalliance.jar"/>
-	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/c3p0-0.9.1.2.jar" sourcepath="/Users/javababy/.m2/repository/c3p0/c3p0/0.9.1.2/c3p0-0.9.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/classes12.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/commons-dbcp-1.2.2.jar"/>
 	<classpathentry kind="lib" path="/Users/javababy/Workspaces/MyEclipse 10/mySpringSide/lib/commons-logging-1.1.jar"/>

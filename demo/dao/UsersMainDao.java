@@ -23,7 +23,7 @@ public class UsersMainDao {
 		return userDao.get(userId);
 	}
 	
-	public static void updateUser(UsersMain user){
+	public static void updateUser(UsersMain user) throws SQLException{
 		userDao.update(user);
 	}
 	
