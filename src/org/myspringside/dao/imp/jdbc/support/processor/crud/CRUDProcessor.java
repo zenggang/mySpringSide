@@ -149,7 +149,7 @@ public class CRUDProcessor<T> {
 	public int findIntValueBySQLQuery(Boolean isFromReadOnlySource,String sql, Object... params) {
 		String result = findStringValueBySQLQuery(isFromReadOnlySource,sql, params);
 		if(!"".equals(result) || result!=null){ 
-			return Integer.valueOf(result);
+			return Integer.valueOf(result); 
 		}else  
 			return 0;
 	}  
